@@ -1,7 +1,7 @@
 const express = require('express');
 
 const {
-    getUsers, postUser, deleteUser
+    getUsers, postUser, deleteUser, updateUser
 } = require('../controllers/users.controller.js')
 
 
@@ -12,7 +12,10 @@ usersRouter.post('/', postUser)
 
 usersRouter.get('/', getUsers)
 
-usersRouter.delete('/', deleteUser)
+usersRouter.delete('/:id', deleteUser)
+
+usersRouter.patch('/:id', updateUser)
+
 
 
 

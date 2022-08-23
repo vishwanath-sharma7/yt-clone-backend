@@ -32,9 +32,23 @@ async function postUser(req, res) {
 async function deleteUser(req, res) {
 
     try {
-        await User.deleteOne({ name: req.body.name })
+        await User.deleteOne({ _id: req.params.id })
 
         res.json(`deleted user: ${req.body.name}.0`)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function updateUser(req, res) {
+
+    try {
+        const user = await User.findById(req.params.id)
+        Object.assign(user, req.body)
+        user.save()
+        res.json(user)
+
+
     } catch (error) {
         console.log(error)
     }
@@ -44,9 +58,9 @@ async function deleteUser(req, res) {
 
 
 
-
 module.exports = {
     getUsers,
     postUser,
-    deleteUser
+    deleteUser,
+    updateUser
 }

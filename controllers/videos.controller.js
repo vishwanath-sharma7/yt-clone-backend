@@ -19,7 +19,6 @@ async function postVideo(req, res) {
             title: req.body.title,
             description: req.body.description,
             url: req.body.url,
-            dateCreated: req.body.dateCreated,
         }
         )
         res.json(video)
@@ -34,7 +33,7 @@ async function deleteVideo(req, res) {
     try {
         await Video.deleteOne(
 
-            { _id: req.body._id }
+            { _id: req.params.id }
 
         )
         res.json('deleted')
@@ -46,6 +45,17 @@ async function deleteVideo(req, res) {
 
 }
 
+async function updateVideo(req, res) {
+    try {
+        const video = await Video.findById(req.params.id)
+        Object.assign(video, req.body)
+        video.save()
+        res.json(video)
+    } catch (error) {
+        console.log(error.message)
+    }
+}
+
 
 
 
@@ -55,5 +65,6 @@ async function deleteVideo(req, res) {
 module.exports = {
     getVideos,
     postVideo,
-    deleteVideo
+    deleteVideo,
+    updateVideo
 }
