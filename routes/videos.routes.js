@@ -8,7 +8,7 @@ const videosRouter = express.Router()
 
 
 
-videosRouter.get('/:id', getVideo)
+videosRouter.get('/find/:id', getVideo)
 
 videosRouter.post('/', verifyToken, postVideo)
 
@@ -16,7 +16,7 @@ videosRouter.delete('/:id', verifyToken, deleteVideo)
 
 videosRouter.put('/:id', verifyToken, updateVideo)
 
-videosRouter.put('/:id', verifyToken, addView)
+videosRouter.post('/:id', verifyToken, addView)
 
 videosRouter.get('/trending', trending)
 

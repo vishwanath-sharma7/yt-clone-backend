@@ -3,13 +3,13 @@ const createError = require("../error")
 
 
 async function getUser(req, res, next) {
+
     try {
         const user = await User.findById(req.params.id).populate("videos")
         res.json(user)
     } catch (error) {
         next(error)
     }
-
 }
 
 async function deleteUser(req, res, next) {
@@ -62,12 +62,11 @@ async function subscribe(req, res, next) {
     } catch (error) {
         next(error)
     }
-
-
 }
+
 async function unsubscribe(req, res, next) {
     try {
-        await User.findById(req.user.id, {
+        await User.findByIdAndUpdate(req.user.id, {
             $pull: { subscribedUsers: req.params.id }
         })
         await User.findByIdAndUpdate(req.params.id, {
@@ -78,8 +77,8 @@ async function unsubscribe(req, res, next) {
     } catch (error) {
         next(error)
     }
-
 }
+
 async function like(req, res, next) {
     try {
 
@@ -88,13 +87,13 @@ async function like(req, res, next) {
     }
 
 }
+
 async function dislike(req, res, next) {
     try {
 
     } catch (error) {
         next(error)
     }
-
 }
 
 

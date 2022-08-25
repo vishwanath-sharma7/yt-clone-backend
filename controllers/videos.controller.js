@@ -16,7 +16,6 @@ async function getVideo(req, res, next) {
 
 async function postVideo(req, res, next) {
     const newVideo = new Video({ userId: req.user.id, ...req.body })
-
     try {
         const savedVideo = await newVideo.save()
         res.status(200).json(savedVideo)
@@ -35,7 +34,7 @@ async function deleteVideo(req, res, next) {
 
         res.status(200).json("Video has been Deleted")
     } else {
-        return next(createError(403, "You can only update your own video"))
+        return next(createError(403, "You can only delete your own video"))
     }
 
 }
@@ -47,14 +46,13 @@ async function updateVideo(req, res, next) {
 
         if (req.user.id === video.userId) {
             const updatedVideo = await Video.findById(req.params.id)
-            Object.assign(updateVideo, req.body)
+            Object.assign(updatedVideo, req.body)
             updatedVideo.save()
             res.status(200).json(updatedVideo)
         } else {
             return next(createError(403, "You can only update your own video"))
         }
     }
-
     catch (error) {
         next(error)
     }
@@ -75,7 +73,7 @@ async function addView(req, res, next) {
 
 async function random(req, res, next) {
     try {
-        const videos = await Video.aggregate([{ $sample: { size: 40 } }])
+        const videos = await Video.aggregate([{ $sample: { size: 1 } }])
         res.status(200).json(videos)
     } catch (error) {
         next(error)
@@ -90,9 +88,7 @@ async function trending(req, res, next) {
     } catch (error) {
         next(error)
     }
-
 }
-
 
 async function subscribe(req, res, next) {
     try {
@@ -105,9 +101,8 @@ async function subscribe(req, res, next) {
             })
         );
         res.status(200).json(list.flat().sort((a, b) => b.createdAt - a.createdAt))
-
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 }
 
