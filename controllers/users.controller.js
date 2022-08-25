@@ -1,5 +1,6 @@
 const User = require('../models/user.models')
 const createError = require("../error")
+const Video = require('../models/video.models')
 
 
 async function getUser(req, res, next) {
@@ -80,7 +81,15 @@ async function unsubscribe(req, res, next) {
 }
 
 async function like(req, res, next) {
+
+    const id = req.user.id;
+    const videoId = req.params.videoId;
     try {
+        await Video.findByIdAndUpdate(videoId, {
+            $addToSet: { likes: id },
+            $pull: { dislikes: id },
+        })
+        res.status(200).json('liked')
 
     } catch (error) {
         next(error)
@@ -89,7 +98,15 @@ async function like(req, res, next) {
 }
 
 async function dislike(req, res, next) {
+
+    const id = req.user.id;
+    const videoId = req.params.videoId;
     try {
+        await Video.findByIdAndUpdate(videoId, {
+            $addToSet: { dislikes: id },
+            $pull: { likes: id },
+        })
+        res.status(200).json('Disliked')
 
     } catch (error) {
         next(error)
