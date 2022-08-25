@@ -1,15 +1,28 @@
-const express = require('express')
-
-const { getVideos, postVideo, deleteVideo, updateVideo } = require('../controllers/videos.controller')
-
+const express = require('express');
+const { getVideo, postVideo, deleteVideo, updateVideo, trending, random, subscribe, addView } = require('../controllers/videos.controller')
+const verifyToken = require('../verifyToken.js');
 const videosRouter = express.Router()
 
-videosRouter.get('/', getVideos)
 
-videosRouter.post('/', postVideo)
 
-videosRouter.delete('/:id', deleteVideo)
 
-videosRouter.patch('/:id', updateVideo)
+
+
+videosRouter.get('/:id', getVideo)
+
+videosRouter.post('/', verifyToken, postVideo)
+
+videosRouter.delete('/:id', verifyToken, deleteVideo)
+
+videosRouter.put('/:id', verifyToken, updateVideo)
+
+videosRouter.put('/:id', verifyToken, addView)
+
+videosRouter.get('/trending', trending)
+
+videosRouter.get('/random', random)
+
+videosRouter.get('/sub', verifyToken, subscribe)
+
 
 module.exports = videosRouter

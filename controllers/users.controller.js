@@ -1,66 +1,111 @@
 const User = require('../models/user.models')
+const createError = require("../error")
 
-async function getUsers(req, res) {
+
+async function getUser(req, res, next) {
     try {
-        const users = await User.find().populate("videos")
-        res.json(users)
+        const user = await User.findById(req.params.id).populate("videos")
+        res.json(user)
     } catch (error) {
-        console.log(error)
+        next(error)
     }
 
 }
 
-async function postUser(req, res) {
+async function deleteUser(req, res, next) {
 
-    try {
-        const user = await User.create({
-            name: req.body.name,
-            age: req.body.age,
-            email: req.body.email,
-            password: req.body.password,
-            videos: req.body.videos
+    if (req.params.id === req.user.id) {
+        try {
+            await User.findByIdAndDelete(req.params.id)
+            res.status(200).json("User has been deleted")
+        } catch (error) {
+            next(error)
         }
-        )
-        res.json(user)
 
-    } catch (error) {
-        console.log(error)
-
+    } else {
+        return next(createError(403, "You can only delete your own account"))
     }
 }
 
-async function deleteUser(req, res) {
+
+
+async function updateUser(req, res, next) {
+
+    if (req.params.id === req.user.id) {
+
+        try {
+            const updatedUser = await User.findById(req.params.id)
+            Object.assign(updatedUser, req.body)
+            updatedUser.save()
+            res.json(updatedUser)
+
+        } catch (error) {
+            next(error)
+        }
+
+    } else {
+        return next(createError(403, "You can only update your own account"))
+    }
+}
+
+async function subscribe(req, res, next) {
 
     try {
-        await User.deleteOne({ _id: req.params.id })
+        await User.findByIdAndUpdate(req.user.id, {
+            $push: { subscribedUsers: req.params.id }
+        })
+        await User.findByIdAndUpdate(req.params.id, {
+            $inc: { subscribers: 1 }
+        })
+        res.status(200).json("Subscribed")
 
-        res.json(`deleted user: ${req.body.name}.0`)
     } catch (error) {
-        console.log(error)
+        next(error)
     }
+
+
 }
-
-async function updateUser(req, res) {
-
+async function unsubscribe(req, res, next) {
     try {
-        const user = await User.findById(req.params.id)
-        Object.assign(user, req.body)
-        user.save()
-        res.json(user)
-
+        await User.findById(req.user.id, {
+            $pull: { subscribedUsers: req.params.id }
+        })
+        await User.findByIdAndUpdate(req.params.id, {
+            $inc: { subscribers: -1 }
+        })
+        res.status(200).json("Unsubscribed")
 
     } catch (error) {
-        console.log(error)
+        next(error)
     }
-}
 
+}
+async function like(req, res, next) {
+    try {
+
+    } catch (error) {
+        next(error)
+    }
+
+}
+async function dislike(req, res, next) {
+    try {
+
+    } catch (error) {
+        next(error)
+    }
+
+}
 
 
 
 
 module.exports = {
-    getUsers,
-    postUser,
+    getUser,
     deleteUser,
-    updateUser
+    updateUser,
+    subscribe,
+    unsubscribe,
+    like,
+    dislike
 }

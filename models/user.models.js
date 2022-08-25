@@ -6,25 +6,36 @@ const userSchema = new Schema({
 
     name: {
         type: String,
-        required: true
-    },
-    age: {
-        type: Number,
-        min: 13,
+        required: true,
+        unique: true
     },
     email: {
         type: String,
         required: true,
-        lowercase: true
+        lowercase: true,
+        unique: true,
     },
     password: {
         type: String,
         required: true
     },
+    img: {
+        type: String,
+
+    },
+    subscribers: {
+        type: Number,
+        default: 0
+    },
+    subscribedUsers: {
+        type: [String]
+    },
     videos: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "Video"
     },
+}, {
+    timestamps: true
 
 })
 
