@@ -5,7 +5,8 @@ const cors = require("cors");
 const userRouter = require('./routes/users.routes.js');
 const videosRouter = require('./routes/videos.routes.js');
 const authRouter = require('./routes/auth.routes.js');
-const cookieParser = require("cookie-parser")
+const cookieParser = require("cookie-parser");
+const commentRouter = require('./routes/comment.routes.js');
 
 
 
@@ -29,6 +30,8 @@ app.use('/users', userRouter)
 app.use('/videos', videosRouter)
 
 app.use('/auth', authRouter)
+
+app.use('/comments', commentRouter)
 
 
 app.use((err, req, res, next) => {

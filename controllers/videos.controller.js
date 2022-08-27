@@ -6,8 +6,10 @@ const Video = require('../models/video.models')
 async function getVideo(req, res, next) {
     try {
         const video = await Video.findById(req.params.id)
-        res.status(200).json(video)
-        res.json(video)
+
+        const user = await User.findById(video.userId)
+
+        res.status(200).json([video, user])
     } catch (error) {
         next(error)
     }
@@ -73,7 +75,7 @@ async function addView(req, res, next) {
 
 async function random(req, res, next) {
     try {
-        const videos = await Video.aggregate([{ $sample: { size: 1 } }])
+        const videos = await Video.aggregate([{ $sample: { size: 40 } }])
         res.status(200).json(videos)
     } catch (error) {
         next(error)
